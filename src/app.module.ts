@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TasksModule } from './tasks/tasks.module';
+import { TaskModule } from './task/task.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { TaskModule } from './tasks/task.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Task } from './task/entities/task.entity';
+import { DataSource } from 'typeorm';
 
 const GRAPHQL = GraphQLModule.forRoot<ApolloDriverConfig>({
   driver: ApolloDriver,
@@ -16,9 +18,19 @@ const GRAPHQL = GraphQLModule.forRoot<ApolloDriverConfig>({
   },
 });
 
+const DATABASE = TypeOrmModule.forRoot({
+  type: 'sqlite',
+  database: 'db.sqlite3',
+  entities: [Task],
+  synchronize: true,
+  logging: true,
+});
+
 @Module({
-  imports: [TasksModule, GRAPHQL],
+  imports: [GRAPHQL, DATABASE, TaskModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private dataSource: DataSource) {}
+}

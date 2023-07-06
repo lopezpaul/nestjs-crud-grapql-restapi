@@ -5,7 +5,7 @@ import { UpdateTaskInput } from './dto/update-task.input';
 
 @Resolver('Task')
 export class TaskResolver {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(private taskService: TaskService) {}
 
   @Query('tasks')
   findAll() {
