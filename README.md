@@ -5,8 +5,10 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
+<p align="center">GraphQL server for a task CRUD. This server is consumed by another repository for its graphical interface, with the aim of using different technologies in the frontend such as: ReactJS, NextJS, VueJS, NuxtJS, etc.
+</p>
+
+<p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
@@ -58,16 +60,160 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
-## Support
+## GraphQL recommendations
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+For all the requests the base url is:
+http://127.0.0.1:3000/graphql or http://localhost:3000/graphql
 
-## Stay in touch
+For the IDE Client, I used Altair GraphQL Client but you can use whatever you prefer
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Show list of Tasks
+
+```
+query {
+  tasks {
+    id
+    description
+    isCompleted
+  }
+}
+```
+
+Expected result:
+
+```
+{
+  "data": {
+    "tasks": [
+      {
+        "id": 1,
+        "description": "test",
+        "isCompleted": false
+      }
+    ]
+  }
+}
+```
+
+## Create Task
+
+```
+mutation CreateTask($createTaskInput: CreateTaskInput!){
+  createTask(createTaskInput: $createTaskInput) {
+      description
+      isCompleted
+    }
+}
+```
+
+Variables
+
+```
+{
+  "createTaskInput": {
+  	"description":"test",
+    "isCompleted": false
+	}
+}
+```
+
+Expected result:
+
+```
+{
+  "data": {
+    "createTask": {
+      "description": "test",
+      "isCompleted": false
+    }
+  }
+}
+```
+
+## Update Task
+
+```
+mutation UpdateTask($updateTaskInput: UpdateTaskInput!){
+  updateTask(updateTaskInput: $updateTaskInput) {
+      description
+      isCompleted
+    }
+}
+```
+
+Variables
+
+```
+{
+   "updateTaskInput": {
+    "id":1,
+  	"description":"test updated",
+    "isCompleted": true
+	}
+}
+```
+
+Expected result:
+
+```
+{
+  "data": {
+    "updateTask": {
+      "description": "test updated",
+      "isCompleted": true
+    }
+  }
+}
+```
+
+## Remove Task
+
+```
+mutation {
+  removeTask(id: 1){
+    id
+  }
+}
+```
+
+Expected result:
+
+```
+{
+  "data": {
+    "removeTask": {
+      "id": 1
+    }
+  }
+}
+```
+
+## Find Task by ID
+
+```
+query {
+  task(id:2) {
+    id
+    description
+    isCompleted
+  }
+}
+```
+
+Expected result
+
+```
+{
+  "data": {
+    "task": {
+      "id": 1,
+      "description": "test updated",
+      "isCompleted": true
+    }
+  }
+}
+```
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+Nest and this project are [MIT licensed](LICENSE).

@@ -39,6 +39,11 @@ export class TaskService {
   }
 
   async remove(id: number) {
-    return await this.tasksRepository.delete(id);
+    const task = await this.tasksRepository.findOneBy({ id });
+    if (!task) {
+      return `Fail trying to remove Task  #${id}. Retry with other id. `;
+    }
+    await this.tasksRepository.delete(id);
+    return task;
   }
 }
